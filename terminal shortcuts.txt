@@ -1,0 +1,43 @@
+Ubuntu terminal notes
+
+cd ..  			# move up one directory in tree)
+cd. 			# stays in same directory in tree) idk what the purpose of this is
+
+cd /mnt/c		# cd windows system instead of linux)
+mkdir FolderName 	# makes directory
+mkdir -p fx/gx/hx 	# Recursively makes directories inside of eachovther. 
+
+rmdir MyFolderName 	#removes directory
+rmdir -p fx/gx/hx	# recursively remove directories
+# caveat: only does it if the dir is empty
+
+tree -d #shows directories
+
+touch file.txt		# creates empty dummy text file in cd
+
+rm -r fx 		# deletes fx folder and everything in it
+
+cat "textFile.txt" 	# concactenates and prints text file
+
+head "textFile.txt" 	# concactenates and displays first line of text
+tail "textFile.txt" 	# last line of text
+
+mv "oldFile" "newFile"	# Cuts and pastes files to locations can also be used to rename
+
+cp "oldFile" "newFile"	# Copy and pastes files to locations  (can use ./ to copy to up a directory)
+cp */*.extension myDir 	# Copies all files of a certain extension to myDir
+
+
+python3 example.py > temptext.txt # instead of printing output to the tirminal puts output into text file
+
+
+PYTHON3
+
+>>> b = "str"
+>>> a = {(b):"yes"}
+>>> (key,value) = a.popitem()
+>>> key
+'str'
+>>> value
+'yes'
+>>>

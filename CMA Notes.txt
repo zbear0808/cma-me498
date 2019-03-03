@@ -1,0 +1,27 @@
+Nikolaus Hansen google for more information on cma
+n dimenson inipiut vector, around (10~100) depends on how expensive evaluating cost func. is
+gradient direction doesn't always point to minimum.
+
+randomly sample random section. 
+throw away vectors with worst cost
+Recombination (create a new vector that is the average of the best vectors, don't use cost func)
+Mutation (change sigma and C, C is a stretching and rotation matrix to change shape of sample area,
+	 sigma is approx how far you are going to sample)
+
+
+Xi = m + sig(N(0,C)) = m+ sig(zi)  sigama can be though of as a normalizing factor
+
+
+make matrix elongate seach spage in the direction towards the new mean X vector
+
+in each iteration 
+
+C = (1-LR)*C + LR * (<z> * Transpose(<z>))
+
+C = covariance matrix VERY IMPORTANT
+Instead of having <z> be the vector from last step to current step
+Have Pc = path to current position BUT slightly modified
+Pc = (1-LR)*Pc + LR*(<z>) ~~=~~ Pc+=<z> but somewhat gives more wieght to original path
+
+Ccov = learning rate that will later be calculated.
+C = (1-Ccov)*C + Ccov *<Pc>* Transpose(<Pc>)
