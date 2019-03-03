@@ -31,7 +31,7 @@ class CMA:
     self.MEW = self.LAMBDA/2
     self.DSIG = 1 + self.MEWCOV/sqrt(self.N)
     
-    self.WEIGHTS = np.array(int(self.MEW))
+    self.WEIGHTS = np.zeros(int(self.MEW))
     count = 0
     for i in self.WEIGHTS:
         count+=1
@@ -40,6 +40,13 @@ class CMA:
     for i in self.WEIGHTS:
         sum += i**2
     self.MEWCOV = np.sqrt(1/sum)
+    self.Z = np.zeros(self.N)
+    self.Z = np.random.multivariate_normal(self.Z,np.identity(self.N))
+    self.ZW = np.zeros(self.N)
+    for wi in self.W:
+        self.ZW += wi*self.Z
+
+
     
     
     
@@ -56,7 +63,12 @@ class CMA:
     def stepC():
         self.C = (1-self.Ccov)*self.C + self.CCOV/self.MEWCOV* self.PC @(self.PC.T)
     def stepPSIG():
-        self.PSIG = (1-self.CSIG)*self.PSIG + np.sqrt()
+        (values,vectors) = np.linalg.eigh(self.C) 
+        rootInvC = vectors / np.det(vectors)
+        # need to add more stuff to make it properly get the eigenvalues and get root
+        self.PSIG = (1-self.CSIG)*self.PSIG + np.sqrt(1-(1-self.CSIG)**2) * self.MEWCOV * rootInvC @ self.ZW
+    def stepZ():
+        self.Z = np.random.multivariate_normal(self.Z,self.C)
 class Rastrigin(CMA):
     def __init__(self, n):
         self.N = n
