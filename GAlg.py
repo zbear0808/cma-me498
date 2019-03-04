@@ -456,7 +456,7 @@ class HyperEllipsoid(Parabola):
         for i in range(0,len(fitness)):
             x = t_pop[i][0]
             x2 = t_pop[i][1]
-            fitness[i] = -((np.sqrt(3)/5*(x-3) + .5*(x2-5))**2 + 5*(np.sqrt(3)/5*(x-3) + .5*(x2-5))**2)
+            fitness[i] = -((np.sqrt(3)/2*(x-3) + .5*(x2-5))**2 + 5*(np.sqrt(3)/2*(x2-5) - .5*(x-3))**2)
 
         return fitness
 

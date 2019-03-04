@@ -8,9 +8,9 @@ import numpy as np
 class CMA:
     def __init__(self,startMean, n):
         #mean is a real, no vector,  n= number of variable in vector
-        self.LAMBDA = 4+3*np.log(n) # offspring number, new solutions sampled, population size
+        self.LAMBDA = 4 + int(3*np.log(n)) # offspring number, new solutions sampled, population size
         self.N = n                  # variables in each vector
-        self.MEW = self.LAMBDA/2        # μ, parent number, solutions involved in updates of m, C, and sigma
+        self.MEW = self.LAMBDA//2        # μ, parent number, solutions involved in updates of m, C, and sigma
         self.M = np.zeros(n)
 
         self.C = np.identity(n)     
@@ -24,9 +24,6 @@ class CMA:
         self.WPRIME = np.array(int(self.LAMBDA))
         for i in range(int(self.LAMBDA)):
             self.WPRIME[i] = np.log()
-        
-        
-   
     
         self.PSIG = np.zeros(self.N)
         self.PC = np.zeros(self.N)
@@ -56,18 +53,26 @@ class CMA:
         for wi in self.W:
             self.ZW += wi*self.Z
 
+        self.BEST_OUTPUTS = []
 
+
+    # Do some Ipython black magic
+    from IPython.core.interactiveshell import InteractiveShell
+    InteractiveShell.ast_node_interactivity = "all"
     
+    #   This method is designed to be overrided by inherited classes
+    #
+    def fitness(self, vector):
+        return 0
+    #
+    #
     
-    
-    # random sampled values = NORMALVIARAITE DIST(0,C) == B @ D @ NORMALVARIATE DIST(0,I)
-    
-    def changePC(self):
-        self.PC = (1-self.CC)*self.PC + sqrt(self.CC*(2-self.CC))*self.MEWCOV*self.Z
-        self.ZSUM = 0
-        for i in range(1,self.MEW+1):
-            self.ZSUM += WEIGHT[i]*self.ZLAMBDA @ self.ZLAMBDA.T
-        self.C = 1-self.CCOV)*self.C + self.CCOV/self.MEWCOV* self.PC @ self.PC.T + CCOV*(1-1/self.MEWCOV)*self.ZSUM
+    #def changePC(self):
+        #self.PC = (1-self.CC)*self.PC + sqrt(self.CC*(2-self.CC))*self.MEWCOV*self.Z
+        #self.ZSUM = 0
+        #for i in range(1,self.MEW+1):
+        #    self.ZSUM += WEIGHT[i]*self.ZLAMBDA @ self.ZLAMBDA.T
+        #self.C = 1-self.CCOV)*self.C + self.CCOV/self.MEWCOV* self.PC @ self.PC.T + CCOV*(1-1/self.MEWCOV)*self.ZSUM
     def stepPC(self):
         self.PC = (1-self.LR)*self.PC + self.LR*(<z>)
     def stepC():
@@ -79,10 +84,17 @@ class CMA:
         self.PSIG = (1-self.CSIG)*self.PSIG + np.sqrt(1-(1-self.CSIG)**2) * self.MEWCOV * rootInvC @ self.ZW
     def stepZ(self):
         self.Z = np.random.multivariate_normal(self.Z,self.C)
+
     def stepSIG(self):
         self.SIG = self.SIG*e^(self.CSIG/self.DSIG * (np.linalg.norm(self.PSIG)/np.linalg.norm(np.random.multivariate_normal(self.M,np.identity(self.N)))/self.E - 1))
     
-    
+    def step(self):
+        self.stepPC()
+        self.stepC()
+        self.stepPSIG()
+        self.stepSIG()
+        self.stepZ()
+
     def plot(self):
         import pylab as plt
         import seaborn as sns
@@ -96,7 +108,29 @@ class CMA:
         plt.ylabel("Fitness")
         plt.show()
     
+    def calculate(self):
+        self.MAXGENS = 10000
+        
+        for gen in range(0,self.MAXGENS):
 
+            fitnesses = np.zeros(self.LAMBDA)
+            for i in range(0,len(self.POPULATION)):
+                fitnesses[i] = self.fitness(self.POPULATION[i])
+
+            maxFitness = np.max(fitnesses)
+            print("Best output is ",maxFitness)
+            self.BEST_OUTPUTS.append(maxFitness)
+            self.step()
+
+
+
+    
+
+
+
+
+
+# inherited classes and their fitness functions 
 class Knapsack(CMA):
     def __init__(self, n, item_values, item_weights, bag_capacity):
         initialVector = np.random.multivariate_normal(np.zeros(n),np.identity(n))
@@ -104,7 +138,6 @@ class Knapsack(CMA):
         self.ITEM_VALUES = item_values
         self.ITEM_WEIGHTS = item_weights
         self.BAG = bag_capacity
-
 
     def fitness(self, vector):
         totalWeight = vector*self.ITEM_WEIGHTS
@@ -128,7 +161,7 @@ class HyperEllipsoid(CMA):
     def fitness(self, vector):
         x = vector[0]
         x2 = vector[1]
-        return  -((np.sqrt(3)/5*(x-3) + .5*(x2-5))**2 + 5*(np.sqrt(3)/5*(x-3) + .5*(x2-5))**2)
+        return  -((np.sqrt(3)/2*(x-3) + .5*(x2-5))**2 + 5*(np.sqrt(3)/2*(x2-5) - .5*(x-3))**2)
 
 class Rastrigin(CMA):
 
@@ -136,7 +169,7 @@ class Rastrigin(CMA):
         initialVector = np.random.multivariate_normal(np.zeros(n),np.identity(n))
         super().__init__()
 
-    def fitness(self):
+    def fitness(self,vector):
         count = 10* self.N
         for i in range(0,self.N):
             count+= (vector[i]-2)**2 - 10*np.cos(2*np.pi*(vector[i]-2))
