@@ -291,7 +291,25 @@ class GAlgClass(object):
 
         best_outputs = []
         num_generations = 1000
-        curr_population = np.random.uniform(low=self.MIN, high=self.MAX, size=self.DOFS_IN_POP)
+
+
+
+
+
+
+
+
+
+
+
+
+        #curr_population = np.random.uniform(low=self.MIN, high=self.MAX, size=self.DOFS_IN_POP)
+        
+        see if this new line works
+        curr_population = np.zeros(DOFS_IN_POPS)
+
+
+
         if self.ROUND_INT:
             curr_population = np.rint(curr_population)
         overall_max_fitness = -99999
@@ -432,7 +450,7 @@ class HyperEllipsoid(Parabola):
         super().__init__(2)
     def calc_fitness(self, t_pop):
 
-        fitness = np.empty(len(t_pop),)
+        fitness = np.zeros(len(t_pop),)
         for i in range(0,len(fitness)):
             x = t_pop[i][0]
             x2 = t_pop[i][1]
