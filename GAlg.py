@@ -307,6 +307,8 @@ class GAlgClass(object):
         
         see if this new line works
         curr_population = np.zeros(DOFS_IN_POPS)
+        for pop in curr_population:
+            pop = np.random.multivariate_normal(np.zeros(n),np.identity(n))
 
 
 

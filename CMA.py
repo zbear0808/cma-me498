@@ -6,7 +6,7 @@
 
 import numpy as np
 class CMA:
-    def __init__(self,mean, n):
+    def __init__(self,startMean, n):
         #mean is a real, no vector,  n= number of variable in vector
         self.LAMBDA = 4+3*np.log(n) # offspring number, new solutions sampled, population size
         self.N = n                  # variables in each vector
@@ -33,7 +33,7 @@ class CMA:
         self.eig = np.linalg.eigh(self.C)
         self.E = sqrt(n)*(1-1/(4*n)+ 1/(21*n**2))
         self.SIG = .5 #num greater than zero  EXPERIMENT by changing this
-        self.MEAN = np.zeros(self.N)    # INITALLY zero vector of 
+        self.MEAN = startMean   
         self.DSIG = 1 + self.MEWCOV/sqrt(self.N)
         
         self.WEIGHTS = np.zeros(int(self.MEW))
@@ -95,10 +95,47 @@ class CMA:
         plt.xlabel("Iteration")
         plt.ylabel("Fitness")
         plt.show()
+    
+
+class Knapsack(CMA):
+    def __init__(self, n, item_values, item_weights, bag_capacity):
+        initialVector = np.random.multivariate_normal(np.zeros(n),np.identity(n))
+        super().__init__(initialVector,n)
+        self.ITEM_VALUES = item_values
+        self.ITEM_WEIGHTS = item_weights
+        self.BAG = bag_capacity
+
+
+    def fitness(self, vector):
+        totalWeight = vector*self.ITEM_WEIGHTS
+        if totalWeight > self.BAG:
+            return 0
+        return vector * self.ITEM_VALUES
+
+class Parabola(CMA):
+    def __init__(self):
+        initialVector = np.random.multivariate_normal(np.zeros(1),np.identity(1))
+        super().__init__(initialVector,1)
+
+    def fitness(self, vector):
+        return vector * vector * -10
+
+class HyperEllipsoid(CMA):
+    def __init__(self):
+        initialVector = np.random.multivariate_normal(np.zeros(2),np.identity(2))
+        super().__init__(initialVector,2)
+
+    def fitness(self, vector):
+        x = vector[0]
+        x2 = vector[1]
+        return  -((np.sqrt(3)/5*(x-3) + .5*(x2-5))**2 + 5*(np.sqrt(3)/5*(x-3) + .5*(x2-5))**2)
+
 class Rastrigin(CMA):
 
     def __init__(self, n):
-        self.N = n
+        initialVector = np.random.multivariate_normal(np.zeros(n),np.identity(n))
+        super().__init__()
+
     def fitness(self):
         count = 10* self.N
         for i in range(0,self.N):
